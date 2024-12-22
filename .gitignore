@@ -1,0 +1,10 @@
+# SQLite files
+*.sqlite3
+
+# Media files
+media/
+
+# Virtual environment
+venv/
+.env/
+*.env
