@@ -10,20 +10,17 @@
     <div class="row w-100 justify-content-center">
         <div class="col-12 col-md-6">
             <div class='shadow border border-light px-3 py-4'>
-                <h2 class="mb-3">Login</h2>
+                <h2 class="mb-3">Register</h2>
                 <h5 class='mb-2 font-monospace fs-6'>
-                    <span>Create a new account?</span>
-                    <a href={% url "register" %}>Register</a>
+                    <span>Already have an account?</span>
+                    <a href={% url "login" %}>Login</a>
                 </h5>
                 <form action="" method="post">
                     {% csrf_token %}
                     {%load crispy_forms_tags %} 
                     {{form|crispy}}
-                    <button class='btn btn-primary' type="submit">Login</button>
+                    <button class='btn btn-primary' type="submit">Register</button>
                 </form>
-                <div class='mt-2'>
-                    <a href={% url "password_reset" %}>Forget Password?</a>
-                </div>
             </div>
         </div>
     </div>

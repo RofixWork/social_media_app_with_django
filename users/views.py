@@ -9,15 +9,39 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView,
 )
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import CreateView, FormView
 
 from utils.mixins import UserAlreadyLoggedIn
 
-from .forms import UserLoginForm
+from .forms import UserLoginForm, UserRegisterForm
+from .models import User
 
 
 # Create your views here.
+class UserRegisterView(UserAlreadyLoggedIn, CreateView):
+    template_name = "users/sign-up.html"
+    model = User
+    form_class = UserRegisterForm
+
+    def form_valid(self, form):
+        user = form.save()
+        email = form.cleaned_data.get("email")
+        password1 = form.cleaned_data.get("password1")
+
+        user = authenticate(self.request, email=email, password=password1)
+
+        if user is not None:
+            login(self.request, user)
+            return redirect("base:home")
+        else:
+            form.add_error(
+                None, "User with this email does not exist"
+            )  # Add a custom error message to the form.
+            return self.form_invalid(form)
+
+
 class LoginView(UserAlreadyLoggedIn, FormView):
     template_name = "users/sign-in.html"
     form_class = UserLoginForm
@@ -67,6 +91,7 @@ class PasswordResetCompleteView(UserAlreadyLoggedIn, PasswordResetCompleteView):
     template_name = "users/password-reset-complete.html"
 
 
+user_register_view = UserRegisterView.as_view()
 user_login_view = LoginView.as_view()
 user_change_password_view = UserChangePasswordView.as_view()
 user_password_change_done_view = UserPasswordChangeDoneView.as_view()

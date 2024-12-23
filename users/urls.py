@@ -1,14 +1,9 @@
-from django.contrib.auth.views import (
-    PasswordResetCompleteView,
-    PasswordResetConfirmView,
-    PasswordResetDoneView,
-    PasswordResetView,
-)
 from django.urls import path
 
 from . import views
 
 urlpatterns = [
+    path("sign-up", views.user_register_view, name="register"),
     path("sign-in", views.user_login_view, name="login"),
     path(
         "change-password", views.user_change_password_view, name="change_password"
