@@ -11,12 +11,12 @@ from django.contrib.auth.views import (
 )
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, UpdateView
 
 from utils.mixins import UserAlreadyLoggedIn
 
 from .forms import UserLoginForm, UserRegisterForm
-from .models import User
+from .models import Profile, User
 
 
 # Create your views here.
@@ -91,6 +91,15 @@ class PasswordResetCompleteView(UserAlreadyLoggedIn, PasswordResetCompleteView):
     template_name = "users/password-reset-complete.html"
 
 
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = Profile
+    fields = ["image", "first_name", "last_name", "bio", "gender", "city", "country"]
+    template_name = "users/edit-profile.html"
+
+    def get_success_url(self):
+        return reverse_lazy("edit_profile", kwargs={"pk": self.request.user.profile.id})
+
+
 user_register_view = UserRegisterView.as_view()
 user_login_view = LoginView.as_view()
 user_change_password_view = UserChangePasswordView.as_view()
@@ -100,3 +109,4 @@ password_reset_view = PasswordResetView.as_view()
 password_reset_confirm_view = PasswordResetConfirmView.as_view()
 password_reset_done_view = PasswordResetDoneView.as_view()
 password_reset_complete_view = PasswordResetCompleteView.as_view()
+edit_profile_view = EditProfileView.as_view()

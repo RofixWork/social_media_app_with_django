@@ -16,6 +16,7 @@
     <div class="container">
       {% if user.is_authenticated %}
         {% csrf_token %}
+        <a href={% url 'edit_profile' pk=user.profile.id %}>Edit</a>
         <form action={% url "logout" %} method='POST'>
           {% csrf_token %}
           <button type='submit'>LOgout</button>

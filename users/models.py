@@ -3,6 +3,11 @@ from django.db import models
 from django.utils.safestring import mark_safe
 
 
+class PERSON_GENDER(models.TextChoices):
+    MALE = "male", "Male"
+    FEMALE = "female", "Female"
+
+
 # Create your models here.
 class User(AbstractUser):
     email = models.EmailField(unique=True, max_length=255)
@@ -24,6 +29,14 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="users", default="users/default_avatar.jpg")
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    bio = models.TextField(max_length=500, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, null=True, blank=True)
+    gender = models.CharField(
+        max_length=10, choices=PERSON_GENDER.choices, default=PERSON_GENDER.MALE
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
