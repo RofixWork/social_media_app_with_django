@@ -9,7 +9,7 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView,
 )
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, FormView, UpdateView
 
@@ -98,6 +98,9 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse("edit_profile", kwargs={"pk": self.request.user.profile.id})
+
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
 
 
 user_register_view = UserRegisterView.as_view()
