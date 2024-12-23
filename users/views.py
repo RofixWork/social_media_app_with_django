@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import LogoutView
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 
@@ -28,4 +29,8 @@ class LoginView(FormView):
             return self.form_invalid(form)
 
 
+class UserLogoutView(LogoutView): ...
+
+
 user_login_view = LoginView.as_view()
+user_logout_view = UserLogoutView.as_view()
