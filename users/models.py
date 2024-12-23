@@ -9,8 +9,27 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
+    class Meta:
+        verbose_name = "user"
+        verbose_name_plural = "users"
+
     def __str__(self):
         """
         Import signals to ensure they are loaded when the app is ready.
         """
         return self.username
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="users", default="users/default_avatar.jpg")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "profile"
+        verbose_name_plural = "profiles"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return getattr(self.user, "username", "")
