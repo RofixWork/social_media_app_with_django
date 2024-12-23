@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     # custom app
     "users.apps.UsersConfig",
+    "base.apps.BaseConfig",
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -137,9 +138,9 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # redirects
-LOGIN_URL = "users:auth"
+LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "login"
 
 
 # auth model
@@ -190,3 +191,5 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success",
     },
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

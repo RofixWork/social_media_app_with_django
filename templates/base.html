@@ -16,10 +16,12 @@
     <div class="container">
       {% if user.is_authenticated %}
         {% csrf_token %}
-        <form action={% url "users:logout" %} method='POST'>
+        <form action={% url "logout" %} method='POST'>
           {% csrf_token %}
           <button type='submit'>LOgout</button>
         </form>
+      {% else %}
+        <a href="{% url 'login' %}">Login</a>
       {% endif %}
       {% block content %}
       {% endblock content %}
