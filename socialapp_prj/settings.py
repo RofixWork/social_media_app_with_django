@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # custom app
     "users.apps.UsersConfig",
     "base.apps.BaseConfig",
+    "posts.apps.PostsConfig",
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

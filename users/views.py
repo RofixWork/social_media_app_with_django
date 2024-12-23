@@ -10,7 +10,7 @@ from django.contrib.auth.views import (
     PasswordResetView,
 )
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, FormView, UpdateView
 
 from utils.mixins import UserAlreadyLoggedIn
@@ -97,7 +97,7 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
     template_name = "users/edit-profile.html"
 
     def get_success_url(self):
-        return reverse_lazy("edit_profile", kwargs={"pk": self.request.user.profile.id})
+        return reverse("edit_profile", kwargs={"pk": self.request.user.profile.id})
 
 
 user_register_view = UserRegisterView.as_view()

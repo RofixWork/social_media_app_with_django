@@ -13,6 +13,6 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("user", "thumbnail", "created_at", "updated_at")
+    list_display = ("user", "full_name", "thumbnail", "created_at", "updated_at")
     search_fields = ("user__username",)
     filter_fields = ("created_at", "updated_at")
