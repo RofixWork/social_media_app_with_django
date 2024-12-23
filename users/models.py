@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.safestring import mark_safe
 
 
 # Create your models here.
@@ -30,6 +31,13 @@ class Profile(models.Model):
         verbose_name = "profile"
         verbose_name_plural = "profiles"
         ordering = ["-created_at"]
+
+    def thumbnail(self):
+        if self.image:
+            return mark_safe(
+                f'<img src="{self.image.url}" width="50" style="border-radius:5px;" />'
+            )
+        return ""
 
     def __str__(self):
         return getattr(self.user, "username", "")
