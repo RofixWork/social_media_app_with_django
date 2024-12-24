@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load custom_filters %}
 {% block title %}
     Home
 {% endblock title %}
@@ -25,20 +25,62 @@
                         <img src="{{post.image.url}}" class="card-img-top" alt="...">
                     </a>
                     <div class="card-body">
-                        <h5 class="card-title fs-4">{{post.title}}</h5>
-                        <p class="card-text fs-6">{{post.content}}</p>
                         <div>
-                            <a href={% url "posts:like" post_id=post.id %}>
-  
-                                <i title='Like' style='font-size:1.5rem;cursor:pointer;' class="text-black bi bi-heart"></i>
+                            <a class="btn_liked" data-post_id="{{post.id}}">
+                                {% if post|is_liked_by_user:user %}
+                                    <i title='Unlike' style='font-size:1.2rem;cursor:pointer;' class="text-danger bi bi-heart-fill"></i>
+                                {% else %}
+                                    <i title='Like' style='font-size:1.2rem;cursor:pointer;'    class="text-black bi bi-heart"></i>
+                                {% endif %}
        
                             </a>
+                            <h6 class="fs-6">
+                                <span id="post_likes_count-{{post.id}}">{{post.likes.count}}</span>
+                                 Likes
+                            </h6>
                         </div>
+                        <h5 class="card-title fs-4">{{post.title}}</h5>
+                        <p class="card-text fs-6">{{post.content}}</p>
                     </div>
                 </div>
             </div>
         {% endfor %}
             
     </div>
+    <script>
+        const likedButtons = document.querySelectorAll('.btn_liked')
+        likedButtons.forEach(button => {
+            button.addEventListener('click', async function(e) {
+                e.preventDefault()
+                liked_button = e.currentTarget
+                postId = liked_button.dataset.post_id
+                const postLikesCount = document.getElementById(`post_likes_count-${postId}`)
+                try {
+                    const res = await fetch(`/posts/${postId}/like`)
+                    const data = await res.json()
+                    icon = liked_button.querySelector('i')
+                    if (data.liked)
+                    {
+                        icon.classList.add('text-danger')
+                        icon.classList.remove('text-black')
+                        icon.classList.remove('bi-heart')
+                        icon.classList.add('bi-heart-fill')
+                        console.log(data.count)
+                        postLikesCount.textContent = data.count
+                    }else{
+                        icon.classList.add('text-black')
+                        icon.classList.remove('text-danger')
+                        icon.classList.remove('bi-heart-fill')
+                        icon.classList.add('bi-heart')
+                        postLikesCount.textContent = data.count
+                    }
+                    
+                }
+                catch (err) {
+                    console.error(err)
+                }
+            })
+        })
+    </script>
 {% endblock content %}
     

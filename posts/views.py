@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, View
@@ -33,13 +33,15 @@ class LikedPostView(LoginRequiredMixin, View):
 
         if like:
             like.delete()
-            messages.info(request, "Unliked post successfully!")  # Add info message.
+            # return json
+            return JsonResponse(
+                {"liked": False, "count": post.likes.count()}, status=200
+            )
         else:
-            Liked.objects.create(post=post, user=request.user)  # Add like to the post.
-            messages.success(
-                request, "Liked post successfully!"
-            )  # Add success message.
-        return redirect(reverse("base:home"))
+            Liked.objects.create(post=post, user=request.user)
+            return JsonResponse(
+                {"liked": True, "count": post.likes.count()}, status=200
+            )
 
 
 create_new_post_view = CreatePostView.as_view()
