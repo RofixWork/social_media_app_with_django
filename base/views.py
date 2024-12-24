@@ -10,7 +10,6 @@ class HomePageView(LoginRequiredMixin, ListView):
     template_name = "base/index.html"
     model = Post
     context_object_name = "posts"
-    ordering = "-created_at"
 
 
 home_page_view = HomePageView.as_view()

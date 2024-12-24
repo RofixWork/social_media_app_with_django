@@ -58,6 +58,21 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
         post_id = self.kwargs.get('post_id')
         return get_object_or_404(Post, id=post_id, user=self.request.user)
 
+class DeletePostView(LoginRequiredMixin, DeleteView):
+    model = Post
+
+    def get_success_url(self):
+        return reverse('profile', kwargs={'pk': self.request.user.id})
+
+    def form_valid(self, form):
+        messages.success(self.request, "Post updated successfully!")
+        return super().form_valid(form)
+
+    def get_object(self, queryset=None):
+        post_id = self.kwargs.get('post_id')
+        return get_object_or_404(Post, id=post_id, user=self.request.user)
+
 create_new_post_view = CreatePostView.as_view()
 like_post_view = LikedPostView.as_view()
 update_post_view = UpdatePostView.as_view()
+delete_post_view = DeletePostView.as_view()
