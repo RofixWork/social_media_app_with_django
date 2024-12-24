@@ -1,3 +1,6 @@
+from typing import Any
+
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (
@@ -11,8 +14,9 @@ from django.contrib.auth.views import (
 )
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, FormView, UpdateView
+from django.views.generic import CreateView, FormView, ListView, UpdateView
 
+from posts.models import Post
 from utils.mixins import UserAlreadyLoggedIn
 
 from .forms import UserLoginForm, UserRegisterForm
@@ -96,11 +100,44 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
     fields = ["image", "first_name", "last_name", "bio", "gender", "city", "country"]
     template_name = "users/edit-profile.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.id != int(self.kwargs.get("pk")):
+            return redirect(
+                reverse("profile", kwargs={"pk": self.kwargs.get("pk")})
+            )  # Redirect to profile if user is not authenticated.
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
-        return reverse("edit_profile", kwargs={"pk": self.request.user.profile.id})
+        return reverse("edit_profile", kwargs={"pk": self.request.user.id})
+
+    def form_valid(self, form):
+        messages.success(
+            self.request, "Profile updated successfully!"
+        )  # Add success message.
+        return super().form_valid(form)
 
     def get_object(self):
         return get_object_or_404(Profile, user=self.request.user)
+
+
+class UserProfileView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = "users/profile.html"
+    context_object_name = "posts"
+
+    def dispatch(self, request, *args, **kwargs):
+        id = self.kwargs.get("pk")
+        self.user = get_object_or_404(User, id=id)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["posts_count"] = self.get_queryset().count()
+        context["profile"] = self.user
+        return context
+
+    def get_queryset(self):
+        return Post.objects.filter(user=self.user)
 
 
 user_register_view = UserRegisterView.as_view()
@@ -113,3 +150,4 @@ password_reset_confirm_view = PasswordResetConfirmView.as_view()
 password_reset_done_view = PasswordResetDoneView.as_view()
 password_reset_complete_view = PasswordResetCompleteView.as_view()
 edit_profile_view = EditProfileView.as_view()
+user_profile_view = UserProfileView.as_view()

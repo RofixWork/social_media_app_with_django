@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Profile
+{% endblock title %}
+
+
+{% block content %}
+<div class="row py-3 gap-3 justify-content-center">
+    <div class="col-12 col-md-7">
+        <div class='card'>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class='d-flex gap-2 align-items-center'>
+                    <div style='width:60px;height:60px;'>
+                        <img class='w-100 h-100 rounded-circle object-fit-cover' src="{{profile.profile.image.url}}" alt="{{post.title}}">
+                    </div>
+                    <div>
+                        <h4 class='fs-4 text-black m-0'>
+                            {{profile|capfirst}}
+                        </h4>
+                        <h6 class='fs-6 m-0 text-secondary'>{{posts_count|default:"0"}} Posts</h6>
+                    </div>
+                </div>
+                {% if user == profile %}
+                    <div>
+                        <a href={% url 'edit_profile' pk=profile.id %} class="btn btn-primary">Edit Profile</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% for post in posts %}
+        <div class="col-12 col-md-7">
+            <div class="card">
+                <div class="card-header">
+                    <div class='d-flex gap-2 align-items-center'>
+                        <div style='width:45px;height:45px;'>
+                            <img class='w-100 h-100 rounded-circle object-fit-cover' src="{{post.user.profile.image.url}}" alt="{{post.title}}">
+                        </div>
+                        <h4 class='fs-6 text-black m-0'>
+                            {{post.user}}
+                        </h4>
+                    </div>
+                </div>
+                <a href="">
+                    <img src="{{post.image.url}}" class="card-img-top" alt="...">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title fs-4">{{post.title}}</h5>
+                    <p class="card-text fs-6">{{post.content}}</p>
+                    <div>
+                        <i title='Like' style='font-size:1.5rem;cursor:pointer;' class="bi bi-heart"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center">
+            <h5 class='fs-4'>No posts found</h5>
+        </div>
+    {% endfor %}
+        
+</div>
+{% endblock content %}
+    
+    

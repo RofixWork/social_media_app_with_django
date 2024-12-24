@@ -1,10 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import ListView
+
+from posts.models import Post
+
 
 # Create your views here.
-class HomePageView(LoginRequiredMixin, TemplateView):
+class HomePageView(LoginRequiredMixin, ListView):
     template_name = "base/index.html"
+    model = Post
+    context_object_name = "posts"
+    ordering = "-created_at"
 
 
 home_page_view = HomePageView.as_view()

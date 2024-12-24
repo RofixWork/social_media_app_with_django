@@ -34,5 +34,6 @@ urlpatterns = [
         name="password_reset_complete",
     ),  # Add this URL.
     path("sign-out", views.user_logout_view, name="logout"),  # Add this URL.
-    path("edit-profile/<int:pk>", views.edit_profile_view, name="edit_profile"),
+    path("profile/<int:pk>", views.user_profile_view, name="profile"),  # Add this URL.
+    path("profile/<int:pk>/edit", views.edit_profile_view, name="edit_profile"),
 ]
