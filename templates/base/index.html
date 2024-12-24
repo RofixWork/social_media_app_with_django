@@ -28,7 +28,11 @@
                         <h5 class="card-title fs-4">{{post.title}}</h5>
                         <p class="card-text fs-6">{{post.content}}</p>
                         <div>
-                            <i title='Like' style='font-size:1.5rem;cursor:pointer;' class="bi bi-heart"></i>
+                            <a href={% url "posts:like" post_id=post.id %}>
+  
+                                <i title='Like' style='font-size:1.5rem;cursor:pointer;' class="text-black bi bi-heart"></i>
+       
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,11 @@ from django.db import models
 from django.utils.safestring import mark_safe
 
 
+class LikedStatus(models.TextChoices):
+    LIKED = "liked", "Liked"
+    UNLIKED = "unliked", "Unliked"
+
+
 # Create your models here.
 class Post(models.Model):
     user = models.ForeignKey(
@@ -23,6 +28,9 @@ class Post(models.Model):
             )
         return ""
 
+    def is_liked_by_user(self, user):
+        return Liked.objects.filter(post=self, user=user).exists()
+
     class Meta:
         verbose_name = "post"
         verbose_name_plural = "posts"
@@ -37,6 +45,9 @@ class Liked(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_likes"
     )
+    status = models.CharField(
+        max_length=10, choices=LikedStatus.choices, default=LikedStatus.LIKED
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -46,3 +57,6 @@ class Liked(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["post", "user"], name="unique_like")
         ]
+
+    def __str__(self):
+        return f"{self.user} liked {self.post}"
