@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load custom_filters %}
 
 {% block title %}
     Profile
@@ -34,24 +34,47 @@
         <div class="col-12 col-md-7">
             <div class="card">
                 <div class="card-header">
-                    <div class='d-flex gap-2 align-items-center'>
-                        <div style='width:45px;height:45px;'>
-                            <img class='w-100 h-100 rounded-circle object-fit-cover' src="{{post.user.profile.image.url}}" alt="{{post.title}}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class='d-flex gap-2 align-items-center'>
+                            <div style='width:45px;height:45px;'>
+                                <img class='w-100 h-100 rounded-circle object-fit-cover' src="{{post.user.profile.image.url}}" alt="{{post.title}}">
+                            </div>
+                            <h4 class='fs-6 text-black m-0'>
+                                {{post.user}}
+                            </h4>
                         </div>
-                        <h4 class='fs-6 text-black m-0'>
-                            {{post.user}}
-                        </h4>
+                        {% if user.is_authenticated and user == post.user %}
+                            <!-- Dropdown for Update/Delete -->
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="{% url 'posts:update' post_id=post.id %}">Update</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a></li>
+                                </ul>
+                            </div>
+                        {% endif %}
+
                     </div>
                 </div>
-                <a href="">
-                    <img src="{{post.image.url}}" class="card-img-top" alt="...">
-                </a>
+                <img src="{{post.image.url}}" class="card-img-top" alt="...">
                 <div class="card-body">
+                    <div>
+                        <a class="btn_liked" data-post_id="{{post.id}}">
+                            {% if post|is_liked_by_user:user %}
+                                <i title='Unlike' style='font-size:1.2rem;cursor:pointer;' class="text-danger bi bi-heart-fill"></i>
+                            {% else %}
+                                <i title='Like' style='font-size:1.2rem;cursor:pointer;' class="text-black bi bi-heart"></i>
+                            {% endif %}
+                        </a>
+                        <h6 class="fs-6">
+                            <span id="post_likes_count-{{post.id}}">{{post.likes.count}}</span>
+                             <span>Likes</span>
+                        </h6>
+                    </div>
                     <h5 class="card-title fs-4">{{post.title}}</h5>
                     <p class="card-text fs-6">{{post.content}}</p>
-                    <div>
-                        <i title='Like' style='font-size:1.5rem;cursor:pointer;' class="bi bi-heart"></i>
-                    </div>
                 </div>
             </div>
         </div>
@@ -60,8 +83,42 @@
             <h5 class='fs-4'>No posts found</h5>
         </div>
     {% endfor %}
-        
 </div>
+<script>
+    const likedButtons = document.querySelectorAll('.btn_liked')
+    likedButtons.forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault()
+            liked_button = e.currentTarget
+            postId = liked_button.dataset.post_id
+            const postLikesCount = document.getElementById(`post_likes_count-${postId}`)
+            try {
+                const res = await fetch(`/posts/${postId}/like`)
+                const data = await res.json()
+                icon = liked_button.querySelector('i')
+                if (data.liked)
+                {
+                    icon.classList.add('text-danger')
+                    icon.classList.remove('text-black')
+                    icon.classList.remove('bi-heart')
+                    icon.classList.add('bi-heart-fill')
+                    console.log(data.count)
+                    postLikesCount.textContent = data.count
+                }else{
+                    icon.classList.add('text-black')
+                    icon.classList.remove('text-danger')
+                    icon.classList.remove('bi-heart-fill')
+                    icon.classList.add('bi-heart')
+                    postLikesCount.textContent = data.count
+                }
+                
+            }
+            catch (err) {
+                console.error(err)
+            }
+        })
+    })
+</script>
 {% endblock content %}
     
     

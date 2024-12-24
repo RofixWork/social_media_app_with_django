@@ -4,10 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, View
+from django.views.generic import CreateView, View, UpdateView, DeleteView
 
 from .models import Liked, Post
-
 
 # Create your views here.
 class CreatePostView(LoginRequiredMixin, CreateView):
@@ -43,6 +42,22 @@ class LikedPostView(LoginRequiredMixin, View):
                 {"liked": True, "count": post.likes.count()}, status=200
             )
 
+class UpdatePostView(LoginRequiredMixin, UpdateView):
+    model = Post
+    template_name = 'posts/edit-post.html'
+    fields = ('image', 'title', 'content')
+
+    def get_success_url(self):
+        return reverse('posts:update', kwargs={'post_id': self.object.id})
+
+    def form_valid(self, form):
+        messages.success(self.request, "Post updated successfully!")
+        return super().form_valid(form)
+
+    def get_object(self, queryset=None):
+        post_id = self.kwargs.get('post_id')
+        return get_object_or_404(Post, id=post_id, user=self.request.user)
 
 create_new_post_view = CreatePostView.as_view()
 like_post_view = LikedPostView.as_view()
+update_post_view = UpdatePostView.as_view()

@@ -60,3 +60,19 @@ class Liked(models.Model):
 
     def __str__(self):
         return f"{self.user} liked {self.post}"
+
+# class Comment(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_comments')
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_comments')
+#     comment = models.CharField(max_length=400)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#
+#     class Meta:
+#         verbose_name =  'Comment'
+#         verbose_name_plural = 'Comments'
+#         ordering = ['-created_at']
+#
+#
+#     def __str__(self) -> str:
+#         return f"{self.comment} to post {getattr(self.post, 'title', '')}"

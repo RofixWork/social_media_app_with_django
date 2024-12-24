@@ -21,26 +21,28 @@
                             </div>
                         </a>
                     </div>
-                    <a href="">
-                        <img src="{{post.image.url}}" class="card-img-top" alt="...">
-                    </a>
+                    <img src="{{post.image.url}}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <div>
                             <a class="btn_liked" data-post_id="{{post.id}}">
                                 {% if post|is_liked_by_user:user %}
                                     <i title='Unlike' style='font-size:1.2rem;cursor:pointer;' class="text-danger bi bi-heart-fill"></i>
                                 {% else %}
-                                    <i title='Like' style='font-size:1.2rem;cursor:pointer;'    class="text-black bi bi-heart"></i>
+                                    <i title='Like' style='font-size:1.2rem;cursor:pointer;' class="text-black bi bi-heart"></i>
                                 {% endif %}
-       
                             </a>
                             <h6 class="fs-6">
                                 <span id="post_likes_count-{{post.id}}">{{post.likes.count}}</span>
-                                 Likes
+                                 <span>Likes</span>
                             </h6>
                         </div>
                         <h5 class="card-title fs-4">{{post.title}}</h5>
                         <p class="card-text fs-6">{{post.content}}</p>
+                        {% comment %} build comment form {% endcomment %}
+                        {% comment %} <form action="" method="post">
+
+                        </form> {% endcomment %}
+
                     </div>
                 </div>
             </div>
