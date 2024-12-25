@@ -15,9 +15,15 @@
                                 <div style='width:45px;height:45px;'>
                                     <img class='w-100 h-100 rounded-circle object-fit-cover' src="{{post.user.profile.image.url}}" alt="{{post.title}}">
                                 </div>
-                                <h4 class='fs-6 text-black m-0'>
-                                    {{post.user}}
-                                </h4>
+                                <div>
+                                    <h4 class='fs-6 text-black m-0'>
+                                        {{post.user}}
+                                    </h4>
+                                    <h6 class='text-secondary m-0' style="font-size:12px;">
+                                        <i class="bi bi-clock"></i>
+                                        {{post.created_at|timesince}}
+                                    </h6>
+                                </div>
                             </div>
                         </a>
                     </div>

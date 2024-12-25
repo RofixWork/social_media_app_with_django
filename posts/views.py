@@ -65,7 +65,7 @@ class DeletePostView(LoginRequiredMixin, DeleteView):
         return reverse('profile', kwargs={'pk': self.request.user.id})
 
     def form_valid(self, form):
-        messages.success(self.request, "Post updated successfully!")
+        messages.success(self.request, "Post deleted successfully!")
         return super().form_valid(form)
 
     def get_object(self, queryset=None):
